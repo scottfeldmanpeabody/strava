@@ -11,3 +11,6 @@ peabody_capstone_2_proposal.pdf
 
 # Don't upload config files
 **/.cfg
+
+# venv
+venv
