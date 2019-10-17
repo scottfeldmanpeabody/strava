@@ -227,12 +227,8 @@ class StravaAthlete(object):
             self.efforts_df = pd.read_csv('data/'+self._athlete_name()+'/efforts_df.csv')
             return print('efforts_df successfully loaded.')
         except FileNotFoundError:
-            try:
-                self.efforts_df = self.efforts_df
-                effort_segs = self.efforts_df.segment_id.unique()
-                print('Appending to existing efforts df.')
-            except:
-                efforts_columns = ['segment_id',
+            
+            efforts_columns = ['segment_id',
                     'effort_id',
                     'name',
                     'start_date',
@@ -240,6 +236,12 @@ class StravaAthlete(object):
                     'elapsed_time',
                     'average_heartrate',
                     'max_heartrate']
+            
+            try:
+                self.efforts_df = self.efforts_df
+                effort_segs = self.efforts_df.segment_id.unique()
+                print('Appending to existing efforts df.')
+            except:
                 self.efforts_df = pd.DataFrame(columns = efforts_columns)
                 effort_segs = np.array([])
                 print('Empty efforts_df created.')
