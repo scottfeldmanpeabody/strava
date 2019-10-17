@@ -229,7 +229,7 @@ class StravaAthlete(object):
         except FileNotFoundError:
             try:
                 self.efforts_df = self.efforts_df
-                effort_segs = efforts_df.segment_id.unique()
+                effort_segs = self.efforts_df.segment_id.unique()
                 print('Appending to existing efforts df.')
             except:
                 efforts_columns = ['segment_id',
@@ -277,7 +277,7 @@ class StravaAthlete(object):
                     self.efforts_df.to_csv('data/'+self._athlete_name()+'/efforts_df.csv', index=False)
                     print('efforts_df.csv successfully saved.')
                     wait = 0
-                    print('Rate limit exceeded, need to wait until the quarter hour')
+                    print('Rate limit exceeded, need to wait 15 minutes')
                     print('It is now {} minutes after the hour'.format(datetime.datetime.now().minute))
                     time.sleep(60*16)
                     print('Trying again...')
