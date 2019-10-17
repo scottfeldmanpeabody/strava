@@ -78,7 +78,7 @@ Two metrics for curviness were developed as curvy1() and curvy2() in the [featur
 
 As you might imagine, some segments are curvy, some are straight. The straight ones are super exciting to plot. Below are 2 particularly curvy segments. The one on the left is a much longer road bike segment than the mountain bike segment on the right. As you can see by the curvy1 and curvy2 metrics, there is quite the different scale, but the curvier segment shows an increased curvy1 and curvy2.
 
-![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/segment_polyline_maps.png)
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/segment_polyline_maps2.png)
 
 ## How Long Will It Take? - Regression Modeling
 
