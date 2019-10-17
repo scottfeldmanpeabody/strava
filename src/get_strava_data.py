@@ -145,7 +145,7 @@ class StravaAthlete(object):
         
         try:
             self.segments_df = pd.read_csv('data/'+self._athlete_name()+'/segments_df.csv')
-            print('segments_df successfully loaded')
+            return print('segments_df successfully loaded')
         except:
             segment_cols = ['ride_name',
                             'ride_id',
@@ -231,7 +231,7 @@ class StravaAthlete(object):
                 self.efforts_df = self.efforts_df
                 effort_segs = efforts_df.segment_id.unique()
                 print('Appending to existing efforts df.')
-            except NameError:
+            except:
                 efforts_columns = ['segment_id',
                     'effort_id',
                     'name',
@@ -240,21 +240,24 @@ class StravaAthlete(object):
                     'elapsed_time',
                     'average_heartrate',
                     'max_heartrate']
-                efforts_df = pd.DataFrame(columns = efforts_columns)
+                self.efforts_df = pd.DataFrame(columns = efforts_columns)
                 effort_segs = np.array([])
                 print('Empty efforts_df created.')
             
+            effort_segment_index = 0
+            effort_segs_to_download = 1
+
             while effort_segment_index < effort_segs_to_download:
                 
                 effort_segment_index = 0
                 
-                remaining_effort_segs = list(np.setdiff1d(segments_df.segment_id,effort_segs))
+                remaining_effort_segs = list(np.setdiff1d(self.segments_df.segment_id,effort_segs))
                 effort_segs_to_download = len(remaining_effort_segs)
                 print('remaining segments to get efforts for: {}'.format(effort_segs_to_download))
                 
                 try:
                     for segment in remaining_effort_segs:
-                        this_segment = list(client.get_segment_efforts(segment))
+                        this_segment = list(self.client.get_segment_efforts(segment))
                         for this_effort in this_segment:
                             this_effort_dict = this_effort.to_dict()
                             this_effort_dict['segment_id'] = segment
@@ -264,8 +267,8 @@ class StravaAthlete(object):
                                 ignore_index=True)
                         effort_segment_index += 1
                         if effort_segment_index % 50 == 0:
-                            print('Last segment downloaded: {0} {1}'.format(efforts_df.tail(1).iloc[0,0],
-                                                                        efforts_df.tail(1).iloc[0,2]))
+                            print('Last segment downloaded: {0} {1}'.format(self.efforts_df.tail(1).iloc[0,0],
+                                                                        self.efforts_df.tail(1).iloc[0,2]))
                             print('It is {0}. Efforts for {1} segments downloaded. {2} segments to go...'
                                 .format(datetime.datetime.now().strftime("%H:%M"),
                                         effort_segment_index,
