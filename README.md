@@ -17,7 +17,7 @@ Strava provides a "Segment Explore" function that can help identify places to ri
 
 * **J. 32nd Ave, Youngfield to ...[Ford]** clearly sounds like a road biking route, just from it's title.
 * Using similar logic **E. Lower LMR to Upper LMR [Lookout Mountain Road]**, sounds like it would be a road biking route as well, but it's most certainly a mountain bike segment as you could tell if you cross-referenced with the [satellite image from Google Maps](https://www.google.com/maps/@39.7400833,-105.235872,1521m/data=!3m1!1e3).
-* The more imaginatively named **D. Suck It Up Ascent** looks like a smooth, albeit dirt road from the [satellite view](https://www.google.com/maps/@39.7790999,-105.2262892,797m/data=!3m1!1e3), but it's most certainly a route one would rather do on a mountain bike.
+* The more imaginatively named **D. Suck It Up Ascent** looks like a smooth, albeit dirt road from the [satellite view](https://www.google.com/maps/@39.7790999,-105.2262892,797m/data=!3m1!1e3), but it's most certainly a route you would rather do on a mountain bike.
 
 While I can think of other ways ot solve this problem (including Strava just crowd sourcing the groupings from its users), I wanted to see if I could model road bike vs. mountain bike segments.
 
@@ -28,7 +28,7 @@ Many segements are rather short, a mile or less, but some map out an entire ride
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/buffalo_brain_loop.png) <br/>
 *[The Buffalo Brain Loop](https://www.strava.com/segments/2490347) is almost a complete ride*
 
-Had I never ridden this before, it would be nice to know how long it will take me to complete this ride. Or, alternatively, what's a good time with which to challenge myself with? Strava allows one to view the "leaderboard" and see everyone's best time on a given segment. And it even allows you to filter down to atheletes you are following. But still, how do I know how an average time of mine will compare to any one other rider's best time? Accordingly, I've developed a model that will estimate your time on a segment you haven't ridden in comparison to a rider you have ridden with before
+Had I never ridden this before, it would be nice to know how long it will take me to complete this ride. Or, alternatively, what's a good time with which to challenge myself with? Strava allows to view the "leaderboard" and see everyone's best time on a given segment. And it even allows you to filter down to atheletes you are following. But still, how do I know how an average time of mine will compare to any one other rider's best time? Accordingly, I've developed a model that will estimate your time on a segment you haven't ridden in comparison to a rider you have ridden with before
 
 ## Data collection
 
@@ -44,4 +44,6 @@ Fortunately, I have recorded a couple thousand myself and my wife has hundreds m
 
 ## Further work
 
-Especially with other apps such as [Trailforks](https://www.trailforks.com) and [MTB Project](https://www.mtbproject.com), **Which Bike Should I Bring?** was largely an academic exercise. However, **How Long Will It Take?**
+Especially with other apps such as [Trailforks](https://www.trailforks.com) and [MTB Project](https://www.mtbproject.com), **Which Bike Should I Bring?** was largely an academic exercise. However, given access to the full database, **How Long Will It Take?** could be extended for any number of Strava users. On any particular segment, you would only need to find one user in common that you've done the same segment as in order to estimate your time. Taking it a bit further, one could imagine a tool that uses higher order connections (a'la [Six Degrees of Kevin Bacon](https://oracleofbacon.org)) to estimate your time on any segment.
+
+Furthermore, while **How Long Will It Take?** is currently implemented with your average time, you could easily modify it to estimate your best time, or 90th percentile time, or whatever you want in order to figure out a good "challenge time" for yourself.
