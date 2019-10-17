@@ -19,6 +19,12 @@ Strava provides a "Segment Explore" function that can help identify places to ri
 * Using similar logic **E. Lower LMR to Upper LMR [Lookout Mountain Road]**, sounds like it would be a road biking route as well, but it's most certainly a mountain bike segment as you could tell if you cross-referenced with the [satellite image from Google Maps](https://www.google.com/maps/@39.7400833,-105.235872,1521m/data=!3m1!1e3).
 * The more imaginatively named **D. Suck It Up Ascent** looks like a smooth, albeit dirt road from the [satellite view](https://www.google.com/maps/@39.7790999,-105.2262892,797m/data=!3m1!1e3), but it's most certainly a route you would rather do on a mountain bike.
 
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/Lower_LMR_to_Upper_LMR.png)</br>
+*Lower LMR to Upper LMR definitely is not on Lookout Mountain Road*
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/Suck_It_Up_Ascent.png)</br>
+*The appropriate bike to ride on Suck It Up Ascent isn't as clear from the satellite image*
+
 While I can think of other ways ot solve this problem (including Strava just crowd sourcing the groupings from its users), I wanted to see if I could model road bike vs. mountain bike segments.
 
 ### How long will it take?
@@ -38,9 +44,43 @@ Fortunately, I have recorded a couple thousand myself and my wife has hundreds m
 
 [get_strava_data.py]https://github.com/scottfeldmanpeabody/strava/blob/master/src/get_strava_data.py creates a StravaAthlete class and allows you to download data for that athlete. It also creates a directory structure to store the data in /strava/data/user_name/ once you've created the /strava directory.
 
-## Which Bike Should I Bring?
+## Which Bike Should I Bring? - Categorical Modeling
 
-## UseHow Long Will It Take?
+Firstly, there are far too many categories of bikes these days (see [wikipedia](https://en.wikipedia.org/wiki/List_of_bicycle_types) for what's still probably an incomplete list), but for an average Strava user, it breaks down to road bike or mountain bike.
+
+In order to determine whether a segment is a road bike or a mountain bike segment, I was able to use the features that Strava lets you label each ride with the bike you rode. 
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike.png)</br>
+*Count of Strava segments ridden on each bike. Note, there are sometimes dozens of segments per ride, hence the large y scale*
+
+So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, I was able to sort out my more creative bike names and group them into the two categories of interest. It turns out it's rather well balanced by segment attempts without me doing anything:
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike_type.png)</br>
+*This data set is balanced AF*
+
+For each segment, Strava provides a number of features, not all of which are independent of each other. For instance, between
+* Distance
+* Elevation Low
+* Elevation High
+* Average Grade
+There are only really 3 independent variables.
+
+For each segment attempt (a.k.a. effort), I also have a time. I calculated an average speed for each effort using (segment distance)/(effort time). For many efforts I have both an average and max heart rate. The max heart rate tends to be bogus most of the time due to errors from the heart rate monitor. 
+
+Another piece of data you can get from Strava is the google polyline for the segment. As with the Strava API, [there's library for that](https://pypi.org/project/polyline/). A google polyline is a string that can be decoded into a list of (latitude, longitude) tuples with polyline.decode(). These points can then be plotted to give a map of the entire segment. I used each series of 3 points to get a "curviness" metric out of the polyline. An example of three points is shown below:
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/defining_curvy.png)</br>
+*Diagram for defining curvy metrics from the polyline. Segments AB and BC are consecutive points on the map. AC is a construction used in the definition of curvy2 (def. below).*
+
+Two metrics for curviness were developed as curvy1() and curvy2() in the [features.py](https://github.com/scottfeldmanpeabody/strava/blob/master/src/features.py) script.
+1. **curvy1:** uses the cosine difference between AB and BC, then normalizes by the total length AB + length BC. The normalization is due to not all polyline segments being the same length.
+2. **curvy2:** uses the ratio (length AB + length BC - length AC) / (length AB + length BC). This metric is unitless and can be viewed as a percent further distance that you traveled along the path A -> B -> C rather than had you gone directly from A -> C
+
+As you might imagine, some segments are curvy, some are straight. The straight ones are super exciting to plot. Below are 2 particularly curvy segments. The one on the left is a much longer road bike segment than the mountain bike segment on the right. As you can see by the curvy1 and curvy2 metrics, there is quite the different scale, but the curvier segment shows an increased curvy1 and curvy2.
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/example_polyline_segments.png)
+
+## How Long Will It Take? - Regression Modeling
 
 ## Further work
 
