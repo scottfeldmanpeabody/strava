@@ -20,3 +20,11 @@ def get_sec(time_str):
     '''
     h, m, s = time_str.split(':')
     return int(h) * 3600 + int(m) * 60 + int(s)
+
+def clean_efforts(df):
+    df.drop(['average_heartrate','max_heartrate'], axis = 1, inplace = True)
+    df.dropna(inplace = True)
+    df.loc[:,'moving_time'] = df.loc[:,'moving_time'].apply(cln.get_sec)
+    df.loc[:,'elapsed_time'] = df.loc[:,'elapsed_time'].apply(cln.get_sec)
+    df['pct_moving'] = df.moving_time / efforts_df.elapsed_time
+    df = df[df.pct_moving >= .9]
