@@ -4,9 +4,9 @@
 
 ![](https://www.ride25.com/wp-content/uploads/2014/10/strava_rgb_logotype.png "Strava Logo")
 
-[Strava](https://www.strava.com) is an app at the juxtiposition of social networking, fitness, and GPS tracking. Used mostly by cyclists and runners, Strava allows athletes can upload GPS tracks of their workouts to share with their friends (and the rest of the internet). The unique feature Strava has is user-defined "segments" which function as short, virtual racecourses where an athelete can compare times against themselves to try to get a PR (personal record), and others for the course record (also known as the K/QOM -- King/Queen of the Mountain for cycling).
+[Strava](https://www.strava.com) is an app at the juxtiposition of social networking, fitness, and GPS tracking. Used mostly by cyclists and runners, Strava allows athletes to upload GPS tracks of their workouts and share them with their friends (and the rest of the internet). The unique feature Strava has is user-defined "segments" which function as short, virtual racecourses where an athelete can compare times against themselves in order to try to get a PR (personal record), and others for the course record (also known as the K/QOM -- King/Queen of the Mountain for cycling).
 
-I've used Strava for many years mostly as a cyclist. In addition to using it for ride tracking and competition (even if only in my head), I've also used it to find new places to ride and estimate how long a ride will take me. 
+I've used Strava for many years, mostly as a cyclist. In addition to using it for ride tracking and competition (even if only in my head), I've also used it to find new places to ride and estimate how long a ride will take me. 
 
 ### Which bike should I bring?
 
@@ -14,6 +14,7 @@ Strava provides a "Segment Explore" function that can help identify places to ri
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/strava_map_golden.png "Some Strava segments in Golden")
 *Strava's segment explorer centered on Golden, CO.*
+
 
 * **J. 32nd Ave, Youngfield to ...[Ford]** clearly sounds like a road biking route, just from it's title.
 * Using similar logic **E. Lower LMR to Upper LMR [Lookout Mountain Road]**, sounds like it would be a road biking route as well, but it's most certainly a mountain bike segment as you could tell if you cross-referenced with the [satellite image from Google Maps](https://www.google.com/maps/@39.7400833,-105.235872,1521m/data=!3m1!1e3).
@@ -25,16 +26,18 @@ Strava provides a "Segment Explore" function that can help identify places to ri
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/Suck_It_Up_Ascent.png)</br>
 *The appropriate bike to ride on Suck It Up Ascent isn't as clear from the satellite image*
 
+
 While I can think of other ways ot solve this problem (including Strava just crowd sourcing the groupings from its users), I wanted to see if I could model road bike vs. mountain bike segments.
 
 ### How long will it take?
 
-Many segements are rather short, a mile or less, but some map out an entire ride.
+While many segements are rather short, a mile or less, some map out an entire ride:
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/buffalo_brain_loop.png) <br/>
-*[The Buffalo Brain Loop](https://www.strava.com/segments/2490347) is almost a complete ride*
+*[The Buffalo Brain Loop](https://www.strava.com/segments/2490347) is almost a complete ride minus the short trip to the parking lot*
 
-Had I never ridden this before, it would be nice to know how long it will take me to complete this ride. Or, alternatively, what's a good time with which to challenge myself with? Strava allows to view the "leaderboard" and see everyone's best time on a given segment. And it even allows you to filter down to atheletes you are following. But still, how do I know how an average time of mine will compare to any one other rider's best time? Accordingly, I've developed a model that will estimate your time on a segment you haven't ridden in comparison to a rider you have ridden with before
+
+Had I never ridden this before, it would be nice to know how long it will take me to complete this ride. Or, alternatively, what's a good time with which to challenge myself with? Strava allows you to view the "leaderboard" and see everyone's best time on a given segment. And it even allows you to filter down to atheletes you are following. But still, how do I know how an average time of mine will compare to any one other rider's best time? Below, I've developed a model that will estimate your time on a segment you haven't ridden in comparison to a rider you have ridden with before
 
 ## Data collection
 
@@ -52,6 +55,7 @@ The data pipeline looked like athlete -> rides recorded -> segments ridden -> se
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/efforts_df.png)
 *Example segment efforts.*
 
+
 ## Which Bike Should I Bring? - Classification Modeling
 
 Firstly, there are far too many categories of bikes these days (see [wikipedia](https://en.wikipedia.org/wiki/List_of_bicycle_types) for what's still probably an incomplete list), but for an average Strava user, it breaks down to road bike or mountain bike.
@@ -61,17 +65,20 @@ Firstly, there are far too many categories of bikes these days (see [wikipedia](
 In order to determine whether a segment is a road bike or a mountain bike segment, I was able to use the features that Strava lets you label each ride with the bike you rode. 
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike.png)</br>
-*Count of Strava segments ridden on each bike. Note, there are sometimes dozens of segments per ride, hence the large y scale*
+*Count of Strava segments ridden on each bike. Note, there are sometimes dozens of segments per ride, hence the large y- scale in the 10,000's*
+
 
 So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, I was able to sort out my more creative bike names and group them into the two categories of interest. 
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/bike_names.png)
 *Rad names for rad bikes.*
 
+
 I've always estimated that I'm close to 50/50 with road vs. mountain biking, but never looked at it quantitatively before. It turns out that's the case, and the data set rather well balanced by segment attempts without me doing anything:
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike_type.png)</br>
 *This data set is balanced AF*
+
 
 Even though the data is labeled by bike, which has been transformed into bike type, not all segments are cleanly separated. Sometimes I ride my moutain bike to the trails and in the process traverse road segments. Sometimes I decide to be a bit of an idiot and ride my road bike on singletrack. The way I handled this was to calculate the percentage of road bike use on each segment. 0% = entirely mountain bike use, 100% = entirely road bike use. Most of the segments are "pure," but for those within 30% of either end, I defined them by 0-30% = mountain bike, and 70-100% = road bike. 30%-70% was dropped from the dataset.
 
@@ -85,7 +92,7 @@ For each segment, Strava provides a number of features, not all of which are ind
 * Elevation Low
 * Elevation High
 * Average Grade
-There are only really 3 independent variables.
+There are reaally only 3 independent variables.
 
 For each segment attempt (a.k.a. effort), I also have a time. I calculated an average speed for each effort using (segment distance)/(effort time). For many efforts I have both an average and max heart rate. The max heart rate tends to be bogus most of the time due to errors from the heart rate monitor. 
 
@@ -94,13 +101,16 @@ Another piece of data you can get from Strava is the google polyline for the seg
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/defining_curvy.png)</br>
 *Diagram for defining curvy metrics from the polyline. Segments AB and BC are consecutive points on the map. AC is a construction used in the definition of curvy2 (def. below).*
 
+
 Two metrics for curviness were developed as curvy1() and curvy2() in the [features.py](https://github.com/scottfeldmanpeabody/strava/blob/master/src/features.py) script:
-1. **curvy1:** uses the cosine difference between AB and BC, then normalizes by the total length AB + length BC. The normalization is due to not all polyline segments being the same length. The resulting units are inverse meters.
+1. **curvy1:** uses the cosine difference between AB and BC, then divides by the total length AB + length BC. This normalization is needed due to not all polyline segments being the same length. The resulting units are inverse meters.
 2. **curvy2:** uses the ratio (length AB + length BC - length AC) / (length AB + length BC). This metric is unitless and can be viewed as a percent further distance that you traveled along the path A -> B -> C rather than had you gone directly from A -> C
 
-As you might imagine, some segments are curvy, some are straight. The straight ones are super exciting to plot. Below are 2 particularly curvy segments. The one on the left is a much longer road bike segment than the mountain bike segment on the right. As you can see by the curvy1 and curvy2 metrics, there is quite the different scale, but the curvier segment shows an increased curvy1 and curvy2.
+As you might imagine, some segments are curvy, some are straight. The straight ones aren't super exciting to plot. Below are 2 particularly curvy segments. The one on the left is a much longer road bike segment than the mountain bike segment on the right. As you can see by the curvy1 and curvy2 metrics, there is quite the different scale, but the curvier segment shows an increased curvy1 and curvy2.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/segment_polyline_maps2.png)
+*A couple of fun segments recreated from their polylines.*
+
 
 Prior to modeling, features were tested for their individual significance vs. the target. Many features looked at had had a P-value near 0, indicating statistical significance for any reasonable threshold. The t-statistic is an indicator of the relative impact of that feature on the target.
 
@@ -119,11 +129,12 @@ Select features are shown in boxplots below:
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/boxplots.png)
 *Boxplots of select features. Clear separation is seen on the right 3 metrics. Interestingly, even though there's considerable overlap in the groupings of average_heartrate, it still has a tiny P-value*
 
+
 Data was split into train and test groups, and several combinations of variables were tested: 
 * **curvy2** was chosen over curvy1. While they performed similarly, curvy2 has more interpretable units than curvy2. Also curvy2 is much less computationaly intensive.
-* **elevation_low** was used along with **average_grade** to convey the amount of climbing or descending. I could have used elevation_low and elevation_high, but would've need to use the sign of grade to transform them into something like elevation_start and elevation_finish
-* Ultimately, distance and elapsed_time were abandonded in favor of **average_speed** in order to reduce somewhat colinear features and better. 
-* average_heartrate was tried and later dropped. It had the lowest feature importance and also had a lot of missing values as I don't wear my heart rate monitor on every ride.
+* **elevation_low** was used along with **average_grade** to convey the amount of climbing or descending. I could have used elevation_low and elevation_high, but would've need to use the sign of grade to transform them into something like elevation_start and elevation_finish.
+* Ultimately, distance and elapsed_time were abandonded in favor of **average_speed** in order to reduce somewhat colinear features and simplify the mode.
+* average_heartrate was tried and later dropped. It had the lowest feature importance and also had a lot of missing values as I don't wear my heart rate monitor on every ride. Including this feature would also limit the generalizabilty (if that wasn't a word, it is now) of the model.
 
 #### Modeling
 
@@ -132,15 +143,18 @@ Several classification models types were tested including logistic regression, k
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/decision_tree.png)</br>
 *Example decision tree*
 
+
 I tried tweaking the meta-parameters such as the max tree depth, number of features, etc, but any increase in model perfomance seemed to have as much to do with a random trial than any particular feature, with accuracy bouncing around 98%-99%.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/rf_confusion_matrix.png)</br>
 *Confusion matrix of the ultimate model. Absolute counts are on the left and normalized percentages on the right.*
 
-All the trials were tested throughout a range of thresholds for the classifier. I also liked this model because the best performance resulted from a threshold near 50%, which 
+
+All the trials were tested throughout a range of thresholds for the classifier. I also liked this model because the best performance resulted from a threshold near 50%, which, for whatever reason, is more aesthetically pleasing to me.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/rf_model_peformance.png)</br>
 *Random Forest model performance vs. threshold set for the final model*
+
 
 The most important feature was found to be curvy-ness, which is reassuring as it was the feature which took the longest to engineer. The feature importances are relatively well balanced over the 4 features used.
 
@@ -148,10 +162,10 @@ The most important feature was found to be curvy-ness, which is reassuring as it
 *Feature importances for final model*
 
 Feature ranking:
-1. feature = curvy2 (37.4%)
-2. feature = avg_speed (23.2%)
-3. feature = average_grade (22.9%)
-4. feature = elevation_low (16.6%)
+1. curvy2 (37.4%)
+2. avg_speed (23.2%)
+3. average_grade (22.9%)
+4. elevation_low (16.6%)
 
 
 ## How Long Will It Take? - Regression Modeling
@@ -172,6 +186,9 @@ The problem with this method is that it would result in two sets of data that ar
 There's one more bit of trickiness before getting on to the modeling: when splitting the data into test and train sets, I couldn't use a standard test/train split, since it would be splitting on each segment effort rather than segment itself, giving considerable data leakage and resulting in a highly overfit model.
 
 To get around this issue, I created groups by segment, rather than random rows. So no efforts from segments in the test set were used in the training set.
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/splitting.png)
+*Splitting the data set. In this example, elapsed_time is an X and mean_k is the y. The left split would not be in regards to segment_id and the target, mean_k. The right splits on segment_id and does not pollute the train with test data. Note, in reality there are more than two segments to model.*
 
 #### Feature selection
 
