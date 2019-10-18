@@ -58,7 +58,7 @@ So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burle
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike_type.png)</br>
 *This data set is balanced AF*
 
-Even though the data is labeled by bike, which has been transformed into bike type, not all segments are cleanly separated. Sometimes I ride my moutain bike to the trails and in the process traverse road segments. Sometimes I decide to be a bit of an idiot and ride my road bike on singletrack. The way I handled this was to calculate a percetage of road bike use on each segment. 0% = entirely mountain bike use, 100% = entirely road bike use. Most of the segments are "pure," but for those within 30% of either end, I defined them by 0-30% = mountain bike, and 70-100% = road bike. 30%-70% was dropped from the dataset.
+Even though the data is labeled by bike, which has been transformed into bike type, not all segments are cleanly separated. Sometimes I ride my moutain bike to the trails and in the process traverse road segments. Sometimes I decide to be a bit of an idiot and ride my road bike on singletrack. The way I handled this was to calculate the percentage of road bike use on each segment. 0% = entirely mountain bike use, 100% = entirely road bike use. Most of the segments are "pure," but for those within 30% of either end, I defined them by 0-30% = mountain bike, and 70-100% = road bike. 30%-70% was dropped from the dataset.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/distribution_of_segments_by_biketype.png)</br>
 *Separating segments into road bike and mountain bike segments by taking the plurality of bike type that was used. The middle 40% is ambiguous and was dropped from the dataset. Blue lines show the original distribution whereas the orange lines shows what each segment was categorized as*
@@ -97,10 +97,12 @@ Prior to modeling, features were tested for their individual significance vs. th
 |curvy1: 	 	      |-86.77 	  |0.00E+00  |
 |curvy2: 	 	      |-83.15 	  |0.00E+00  |
 
-Select features are shown in boxplots, below:
+Select features are shown in boxplots below:
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/boxplots.png)
-*Boxplots of select features. Clear separation is seen on the right 3 metrics. Interestingly, even though there's considerable overlap in the grouping of average_heartrate, it still has a tiny P-value*
+*Boxplots of select features. Clear separation is seen on the right 3 metrics. Interestingly, even though there's considerable overlap in the groupings of average_heartrate, it still has a tiny P-value*
+
+Data was split into train and test groups, and several combinations of variables were tested. Several classification models were tested as well. A very vanilla Random Forest Model was found to yield the best performance.
 
 ## How Long Will It Take? - Regression Modeling
 
