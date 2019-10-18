@@ -1,4 +1,4 @@
-# Creating New Functionality for Strava
+# Creating New Functionality with Strava Data
 
 ## Introduction
 
