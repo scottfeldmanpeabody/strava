@@ -63,7 +63,12 @@ In order to determine whether a segment is a road bike or a mountain bike segmen
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike.png)</br>
 *Count of Strava segments ridden on each bike. Note, there are sometimes dozens of segments per ride, hence the large y scale*
 
-So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, I was able to sort out my more creative bike names and group them into the two categories of interest. It turns out it's rather well balanced by segment attempts without me doing anything:
+So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, I was able to sort out my more creative bike names and group them into the two categories of interest. 
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/bike_names.png)
+*Rad names for rad bikes.*
+
+I've always estimated that I'm close to 50/50 with road vs. mountain biking, but never looked at it quantitatively before. It turns out that's the case, and the data set rather well balanced by segment attempts without me doing anything:
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike_type.png)</br>
 *This data set is balanced AF*
