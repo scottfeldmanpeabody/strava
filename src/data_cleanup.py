@@ -22,9 +22,24 @@ def get_sec(time_str):
     return int(h) * 3600 + int(m) * 60 + int(s)
 
 def clean_efforts(df):
+    '''
+    Cleans up efforts_df.
+    '''
     df.drop(['average_heartrate','max_heartrate'], axis = 1, inplace = True)
     df.dropna(inplace = True)
-    df.loc[:,'moving_time'] = df.loc[:,'moving_time'].apply(cln.get_sec)
-    df.loc[:,'elapsed_time'] = df.loc[:,'elapsed_time'].apply(cln.get_sec)
-    df['pct_moving'] = df.moving_time / efforts_df.elapsed_time
+    df.loc[:,'moving_time'] = df.loc[:,'moving_time'].apply(get_sec)
+    df.loc[:,'elapsed_time'] = df.loc[:,'elapsed_time'].apply(get_sec)
+    df['pct_moving'] = df.moving_time / df.elapsed_time
     df = df[df.pct_moving >= .9]
+
+def time_stats_dict(df):
+    import numpy as np
+    '''
+    Used for modeling targets for segment time estimator
+    '''
+    d = dict()
+    d['segment_id'] = list(df.segment_id)[0]
+    d['mean'] = np.mean(df.elapsed_time)
+    d['median'] = np.median(df.elapsed_time)
+    d['std'] = np.std(df.elapsed_time)
+    return d
