@@ -40,7 +40,7 @@ Had I never ridden this before, it would be nice to know how long it will take m
 
 Strava has an [API](http://developers.strava.com) which, in a very "there's an app for that" moment, can be accessed with the [stravalib](https://pythonhosted.org/stravalib/) library. Setting up a Flask site to use the API is isn't that hard, but it's not that easy, either. [hozn's Github repo](https://github.com/hozn/stravalib) provides a good walkthrough on how to do this. Unfortunately, the rates you can pull data are throttled significantly, and the data you can gather is limited to users who have password authorized your app. 
 
-Fortunately, I have recorded a couple thousand myself and my wife has hundreds more, so this provided the fodder I needed for the modeling done below.
+Fortunately, I have recorded a couple thousand myself and my wife, K, has hundreds more, so this provided the fodder I needed for the modeling done below.
 
 [get_strava_data.py](https://github.com/scottfeldmanpeabody/strava/blob/master/src/get_strava_data.py) creates a StravaAthlete class and allows you to download data for that athlete. It also creates a directory structure to store the data in /strava/data/user_name/ once you've created the /strava directory.
 
@@ -165,7 +165,7 @@ Beyond the best efforts of the top 10 riders on a segment, Strava does not provi
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/enchanted_forest_histogram.png)</br>
 *Histograms of my times on a trail called "Enchanted Forest." Not to be confused with a random forest.*
 
-The problem with this method is that it would result in two sets of data that are decidely non-normally distributed. Though I thought I could bootstrap my way out of this problem (i.e. sample each half of the distribution with replacement in order ot get a normally distributed data set), the simpler, and actually more relevant approach, was to download my wife's data and predict her times based on mine.
+The problem with this method is that it would result in two sets of data that are decidely non-normally distributed. Though I thought I could bootstrap my way out of this problem (i.e. sample each half of the distribution with replacement in order ot get a normally distributed data set), the simpler, and actually more relevant approach, was to download K's data and predict her times based on mine.
 
 #### Test/train split
 
@@ -175,7 +175,7 @@ To get around this issue, I created groups by segment, rather than random rows. 
 
 #### Feature selection
 
-Using my experinece from the classification stufy above, I selected mostly the same features. However, in this case I did use distance and ellapsed_time instead of average_speed because time is what i was tyring to predict. Not using my ellapsed time to predict my wife's elapsed time proved to be a folly.
+Using my experinece from the classification stufy above, I selected mostly the same features. However, in this case I did use distance and ellapsed_time instead of average_speed because time is what i was tyring to predict. Not using my ellapsed time to predict K's elapsed time proved to be a folly.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/feature_correlations.png)</br>
 *Correlations of thefeatures that were used in this model. mean_k is the target average time to be predicted. Note the high correlation with ellapsed time. (That's called foreshadowing, folks)*
@@ -184,7 +184,7 @@ In the end, I used **ellapsed_time**, **distance**, **average_grade**, and **cur
 
 #### Model performance
 
-Again, of the models attempted, random forest came out on top with an R-squared of 0.97, meaning the model predicted about 97% of the variation seen in the data. Also the RMSE of 197 is easily interpreted as one could expect my wife's actual average time to be +/- 3 minutes or so from the predicted time. While this is a lousy range for really short segments, it's very good for long segments (the longest in this set being over 3 hours), where this functionality is most useful anyway.
+Again, of the models attempted, random forest came out on top with an R-squared of 0.97, meaning the model predicted about 97% of the variation seen in the data. Also the RMSE of 197 is easily interpreted as one could expect K's actual average time to be +/- 3 minutes or so from the predicted time. While this is a lousy range for really short segments, it's very good for long segments (the longest in this set being over 3 hours), where this functionality is most useful anyway.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/rf_regressor_performance.png)</br>
 *Actual times vs. random forest predicted times.*
@@ -194,7 +194,10 @@ What's not so exciting about this model is that the most important feature, by f
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/regression_feature_importance.png)</br>
 *Feature importance of model*
 
-While this isn't necessarily surpising, it's a bit demorilizing that I can get nearly the same performance by simply making a single variable linear fit to my times vs. my wife's times to predict her time on other segments with >90% accuracy.
+While this isn't necessarily surpising, it's a bit demorilizing that I can get nearly the same performance by simply making a single variable linear fit to my times vs. K's times to predict her time on other segments with >80% accuracy.
+
+![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/linear_fit.png)</br>
+*If I didn't know all this data science stuff, this would be the best I'd go on to predict times. The slope says that in order to estimate her average time on any segment, just take my average time and multiply by ~1.2* 
 
 ## Further work
 
