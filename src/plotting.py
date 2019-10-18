@@ -6,10 +6,10 @@ def plot_confusion_matrix(y_true, y_pred, classes, ax,
                           normalize=False,
                           title=None,
                           cmap=plt.cm.Blues):
-    """
+    '''
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
-    """
+    '''
     if not title:
         if normalize:
             title = 'Normalized confusion matrix'
@@ -58,6 +58,12 @@ def plot_confusion_matrix(y_true, y_pred, classes, ax,
     return ax
 
 def plot_segment_map(df, seg, ax):
+    '''
+    Plots a polyline using lat/long as x/y. Note, this is not technically correct, but 
+    works okay since the segments are short. Also calculates and displays the two
+    curvy metrics.
+    '''
+
     row = df.index[df.segment_id == seg][0]
     xy = polyline.decode(df.polyline[row])
     
@@ -90,7 +96,7 @@ def plot_segment_map(df, seg, ax):
     ax.annotate('end', xy=(x[-1],y[-1]))
     ax.set_xlabel('Latitude')
     ax.set_ylabel('Longitude')
-    ax.set_title('{0} \n curvy1: {1} \n curvy2: {2}'.format(name, curve1, curve2))
+    ax.set_title('{0} \n curvy1: {1:.1f} \n curvy2: {2.2%}'.format(name, curve1, curve2))
     return ax
 
 def plot_polyline(pline):
@@ -123,4 +129,4 @@ def plot_polyline(pline):
     ax.annotate('end', xy=(x[-1],y[-1]))
     ax.set_xlabel('Latitude')
     ax.set_ylabel('Longitude')
-    ax.set_title('curvy1: {0} \n curvy2: {1}'.format(curve1,curve2))
+    ax.set_title('curvy1: {0:.1f} \n curvy2: {1:.2%}'.format(curve1,curve2))
