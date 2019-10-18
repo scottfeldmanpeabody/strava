@@ -130,3 +130,64 @@ def plot_polyline(pline):
     ax.set_xlabel('Latitude')
     ax.set_ylabel('Longitude')
     ax.set_title('curvy1: {0:.1f} \n curvy2: {1:.2%}'.format(curve1,curve2))
+
+def best_fit_slope_and_intercept(xs,ys):
+    '''
+    Used in plot_model_performance()
+    '''
+    m = (((np.mean(xs)*np.mean(ys)) - np.mean(xs*ys)) /
+         ((np.mean(xs)*np.mean(xs)) - np.mean(xs*xs)))
+    
+    b = np.mean(ys) - m*np.mean(xs)
+    
+    return m, b
+
+def plot_model_performance(y_test, y_hat, target_name = '', title = ''):
+    '''
+    Plots a comparison of y_test vs. y_hat. In a perfect model,
+    it's a line with a slope of 1.
+    '''
+    
+    print('RMSE = {:.4f}'.format(np.sqrt(mean_squared_error(y_test, y_hat))))
+    print('R^2 = {:.4f}'.format(r2_score(y_test,y_hat)))
+
+    m, b = best_fit_slope_and_intercept(y_test,y_hat)
+    regression_line = [(m*x)+b for x in y_test]
+
+    plt.scatter(y_test, y_hat, alpha = .5, s = 5, label = None)
+    plt.plot(y_test,regression_line, c = 'red', linewidth = .8, label = ('Linear Fit'))
+    plt.xlabel('Actual {}'.format(target_name))
+    plt.ylabel('Predicted {}'.format(target_name))
+    plt.legend()
+    plt.annotate('y = {0:.2f}x +{1:.2f}'.format(m, b), xy=(0.05, 0.80), xycoords='axes fraction')
+    plt.annotate('R-squared = %0.2f' % r2_score(y_test,y_hat), xy=(0.05, 0.70), xycoords='axes fraction')
+    plt.annotate('RMSE = %0.2f' % np.sqrt(mean_squared_error(y_test, y_hat)), xy=(0.05, 0.60), xycoords='axes fraction')
+    plt.title(title)
+
+def plot_feature_importances(model):
+    '''
+    Feature importances of a random forest model.
+    '''
+    importances = model.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in model.estimators_],
+                 axis=0)
+    indices = np.argsort(importances)[::-1]
+    features = list(X.columns[indices])
+
+    # Print the feature ranking
+    print("Feature ranking:")
+
+    for f in range(X.shape[1]):
+        print("{}. {}: ({:.1%})".format(f + 1, features[f], importances[indices[f]]))
+
+
+    # Plot the feature importances of the forest
+    plt.figure()
+    plt.title("Feature importances")
+    plt.bar(range(X.shape[1]), importances[indices],
+           color="lightblue", yerr=std[indices], align="center")
+    plt.xticks(range(X.shape[1]), features, rotation = 40)
+    plt.xlim([-1, X.shape[1]])
+    plt.ylabel('Importance (%)')
+    plt.xlabel('Feature')
+    plt.show()

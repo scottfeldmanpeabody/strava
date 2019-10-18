@@ -43,3 +43,18 @@ def time_stats_dict(df):
     d['median'] = np.median(df.elapsed_time)
     d['std'] = np.std(df.elapsed_time)
     return d
+
+def efforts_stats(df):
+    cols = ['segment_id','mean','median','std','count']
+    output_df = pd.DataFrame(columns = cols)
+    
+    seg_times_df = df[['segment_id','elapsed_time']]
+    
+    for segment in seg_times_df.segment_id.unique():
+        this_segment_df = seg_times_df[(seg_times_df.segment_id == segment) &
+                                      (seg_times_df.elapsed_time < 
+                                       2*np.median(seg_times_df[seg_times_df.segment_id == segment].elapsed_time))]
+        this_seg_dict = time_stats_dict(this_segment_df)
+        output_df = output_df.append({k:this_seg_dict[k] for k in cols if k in this_seg_dict}, ignore_index=True)
+    
+    return output_df
