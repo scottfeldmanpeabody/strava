@@ -77,7 +77,7 @@ So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burle
 I've always estimated that I'm close to 50/50 with road vs. mountain biking, but never looked at it quantitatively before. It turns out that's the case, and the data set rather well balanced by segment attempts without me doing anything:
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike_type.png)</br>
-*This data set is balanced AF*
+*Reasonably balanced data set without any over/under sampling.*
 
 
 Even though the data is labeled by bike, which has been transformed into bike type, not all segments are cleanly separated. Sometimes I ride my moutain bike to the trails and in the process traverse road segments. Sometimes I decide to be a bit of an idiot and ride my road bike on singletrack. The way I handled this was to calculate the percentage of road bike use on each segment. 0% = entirely mountain bike use, 100% = entirely road bike use. Most of the segments are "pure," but for those within 30% of either end, I defined them by 0-30% = mountain bike, and 70-100% = road bike. 30%-70% was dropped from the dataset.
