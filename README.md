@@ -62,13 +62,13 @@ Firstly, there are far too many categories of bikes these days (see [wikipedia](
 
 #### Classifying my target
 
-In order to determine whether a segment is a road bike or a mountain bike segment, I was able to use the features that Strava lets you label each ride with the bike you rode. 
+Strava lets you label your gear for each rider. In order to determine whether a segment is a road bike or a mountain bike segment, I was able to use the labeled bike for each ride.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/attempts_by_bike.png)</br>
 *Count of Strava segments ridden on each bike. Note, there are sometimes dozens of segments per ride, hence the large y- scale in the 10,000's*
 
 
-So it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, I was able to sort out my more creative bike names and group them into the two categories of interest. 
+While it's obvious to the  that "Road", "Carbon Road", and "Road + Burley" (a Burley is a kid trailer), are all road bikes, knowing my own mildy clever bike names, I grouped all of the bikes into the two categories of interest. 
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/bike_names.png)
 *Rad names for rad bikes.*
@@ -83,7 +83,8 @@ I've always estimated that I'm close to 50/50 with road vs. mountain biking, but
 Even though the data is labeled by bike, which has been transformed into bike type, not all segments are cleanly separated. Sometimes I ride my moutain bike to the trails and in the process traverse road segments. Sometimes I decide to be a bit of an idiot and ride my road bike on singletrack. The way I handled this was to calculate the percentage of road bike use on each segment. 0% = entirely mountain bike use, 100% = entirely road bike use. Most of the segments are "pure," but for those within 30% of either end, I defined them by 0-30% = mountain bike, and 70-100% = road bike. 30%-70% was dropped from the dataset.
 
 ![](https://github.com/scottfeldmanpeabody/strava/blob/master/images/distribution_of_segments_by_biketype.png)</br>
-*Separating segments into road bike and mountain bike segments by taking the plurality of bike type that was used. The middle 40% is ambiguous and was dropped from the dataset. Blue lines show the original distribution whereas the orange lines shows what each segment was categorized as*
+*Separating segments into road bike and mountain bike segments by taking the plurality of bike type that was used. The middle 40% is ambiguous and was dropped from the dataset. Blue lines show the original distribution of % road bike use on each segmenet, and the orange line shows the distribution when each segment was forced to either mountain or road use.*
+
 
 #### Feature engineering and selection
 
@@ -92,7 +93,7 @@ For each segment, Strava provides a number of features, not all of which are ind
 * Elevation Low
 * Elevation High
 * Average Grade
-There are reaally only 3 independent variables.
+There are reaally only 3 independent variables. Knowning distance and elevation change, one could calculate the average grade.
 
 For each segment attempt (a.k.a. effort), I also have a time. I calculated an average speed for each effort using (segment distance)/(effort time). For many efforts I have both an average and max heart rate. The max heart rate tends to be bogus most of the time due to errors from the heart rate monitor. 
 
